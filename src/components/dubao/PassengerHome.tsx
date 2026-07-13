@@ -8,14 +8,23 @@ import {
   FlatList,
   Modal,
   TextInput,
-  Image,
   Dimensions,
-  Animated as RNAnimated,
 } from 'react-native';
 import { useAppState, BOATS, LOCATIONS, Boat } from '@/context/AppContext';
 import { MapView } from './MapView';
+import { getVesselIcon } from './VesselIcons';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+// Helper to generate Captain Monograms (e.g. "Babu Mia" -> "BM")
+const getMonogram = (name: string) => {
+  if (!name) return 'C';
+  const parts = name.split(' ');
+  if (parts.length > 1) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+};
 
 export const PassengerHome: React.FC = () => {
   const {
@@ -126,12 +135,12 @@ export const PassengerHome: React.FC = () => {
       {/* App Main Header */}
       <View style={styles.topAppBar}>
         <View style={styles.brandRow}>
-          <Text style={styles.appTitle}>Dubao</Text>
+          <Text style={styles.appTitle}>DUBAO</Text>
           <View style={styles.badgeLive}>
-            <Text style={styles.badgeLiveText}>LIVE FLOOD</Text>
+            <Text style={styles.badgeLiveText}>ACTIVE MONSOON</Text>
           </View>
         </View>
-        <Text style={styles.floodLevel}>Dhaka Flood Index: 4.5m 🌧️ (Surge 2.2x)</Text>
+        <Text style={styles.floodLevel}>Dhaka Flood Index: 4.5m | Dynamic Surge active</Text>
         <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
           <Text style={styles.logoutBtnText}>Switch User</Text>
         </TouchableOpacity>
@@ -140,7 +149,7 @@ export const PassengerHome: React.FC = () => {
       {/* Floating Global Comical Notification */}
       {funnyNotification && (
         <View style={styles.toastBanner}>
-          <Text style={styles.toastText}>🚨 {funnyNotification}</Text>
+          <Text style={styles.toastText}>{funnyNotification}</Text>
         </View>
       )}
 
@@ -156,11 +165,13 @@ export const PassengerHome: React.FC = () => {
             {/* Promo banner slider mockup */}
             <View style={styles.promoCard}>
               <View style={styles.promoTextColumn}>
-                <Text style={styles.promoBadge}>MONSOON OFFER</Text>
-                <Text style={styles.promoHeading}>Get ৳50 off your ride!</Text>
-                <Text style={styles.promoDesc}>Use code <Text style={styles.boldCode}>WET50</Text> before sandals float away.</Text>
+                <Text style={styles.promoBadge}>OFFER</Text>
+                <Text style={styles.promoHeading}>Get ৳50 off your next commute</Text>
+                <Text style={styles.promoDesc}>Apply code <Text style={styles.boldCode}>WET50</Text> before your shoes float away.</Text>
               </View>
-              <Text style={styles.promoCardEmoji}>🛶</Text>
+              <View style={styles.promoVectorPlaceholder}>
+                <View style={styles.promoVectorCircle} />
+              </View>
             </View>
 
             {/* Quick Actions Panel */}
@@ -169,9 +180,11 @@ export const PassengerHome: React.FC = () => {
                 style={styles.quickActionBox}
                 onPress={() => setIsSelectingRoute(true)}
               >
-                <Text style={styles.quickActionEmoji}>🚣</Text>
+                <View style={styles.quickActionIconWrapper}>
+                  {getVesselIcon('mini', '#00B4D8', 24)}
+                </View>
                 <Text style={styles.quickActionLabel}>Dubao Ride</Text>
-                <Text style={styles.quickActionSub}>Book a boat</Text>
+                <Text style={styles.quickActionSub}>Book a vessel</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -183,7 +196,9 @@ export const PassengerHome: React.FC = () => {
                   selectBoat('cargo');
                 }}
               >
-                <Text style={styles.quickActionEmoji}>📦</Text>
+                <View style={styles.quickActionIconWrapper}>
+                  {getVesselIcon('cargo', '#00B4D8', 24)}
+                </View>
                 <Text style={styles.quickActionLabel}>Cargo Delivery</Text>
                 <Text style={styles.quickActionSub}>Ship goods</Text>
               </TouchableOpacity>
@@ -197,9 +212,11 @@ export const PassengerHome: React.FC = () => {
                   selectBoat('vip');
                 }}
               >
-                <Text style={styles.quickActionEmoji}>🍵</Text>
-                <Text style={styles.quickActionLabel}>Tea Delivery</Text>
-                <Text style={styles.quickActionSub}>Hot tea on boat</Text>
+                <View style={styles.quickActionIconWrapper}>
+                  {getVesselIcon('vip', '#00B4D8', 24)}
+                </View>
+                <Text style={styles.quickActionLabel}>Tea Service</Text>
+                <Text style={styles.quickActionSub}>Premium tea logs</Text>
               </TouchableOpacity>
             </View>
 
@@ -224,7 +241,9 @@ export const PassengerHome: React.FC = () => {
                   setLocations(LOCATIONS[0], item);
                 }}
               >
-                <Text style={styles.historyIcon}>🕒</Text>
+                <View style={styles.historyCircle}>
+                  <Text style={styles.historyCircleText}>⚓</Text>
+                </View>
                 <View style={styles.historyTextContainer}>
                   <Text style={styles.historyTitle}>{item.split(' ')[0]}</Text>
                   <Text style={styles.historySub}>{item}</Text>
@@ -235,7 +254,7 @@ export const PassengerHome: React.FC = () => {
             {/* Achievements list */}
             {achievements.length > 0 && (
               <View style={styles.achievementsWrap}>
-                <Text style={styles.sectionHeader}>Monsoon Survival Badges</Text>
+                <Text style={styles.sectionHeader}>Commuter Badges</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.badgeScroll}>
                   {achievements.map((badge, index) => (
                     <View key={index} style={styles.achievementBadge}>
@@ -252,21 +271,21 @@ export const PassengerHome: React.FC = () => {
         {isSelectingRoute && (
           <View style={styles.routeSheet}>
             <View style={styles.sheetHeader}>
-              <Text style={styles.sheetTitle}>Choose Route</Text>
+              <Text style={styles.sheetTitle}>Set Commute Ports</Text>
               <TouchableOpacity style={styles.closeTextBtn} onPress={() => setIsSelectingRoute(false)}>
                 <Text style={styles.closeText}>Cancel</Text>
               </TouchableOpacity>
             </View>
 
             <TouchableOpacity style={styles.inputTrigger} onPress={() => setShowPickupModal(true)}>
-              <View style={[styles.nodeIndicator, { backgroundColor: '#2A9D8F' }]} />
+              <View style={[styles.nodeIndicator, { backgroundColor: '#10B981' }]} />
               <Text style={styles.inputText}>
                 {tempPickup || 'From: Select Pickup Harbor'}
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.inputTrigger} onPress={() => setShowDestModal(true)}>
-              <View style={[styles.nodeIndicator, { backgroundColor: '#E63946' }]} />
+              <View style={[styles.nodeIndicator, { backgroundColor: '#EF4444' }]} />
               <Text style={styles.inputText}>
                 {tempDest || 'To: Select Destination Harbor'}
               </Text>
@@ -290,9 +309,9 @@ export const PassengerHome: React.FC = () => {
           <View style={styles.bookingSheet}>
             <View style={styles.sheetHeader}>
               <View>
-                <Text style={styles.sheetTitle}>Select Your Vessel</Text>
+                <Text style={styles.sheetTitle}>Vessel Categories</Text>
                 <Text style={styles.routePreview}>
-                  {pickupLocation.split(' ')[0]} ➔ {destinationLocation.split(' ')[0]} (3.4 km)
+                  Route: {pickupLocation.split(' ')[0]} ➔ {destinationLocation.split(' ')[0]}
                 </Text>
               </View>
               <TouchableOpacity style={styles.closeTextBtn} onPress={cancelRide}>
@@ -318,7 +337,7 @@ export const PassengerHome: React.FC = () => {
             {/* Surge multiplier alert */}
             <View style={styles.surgeAlert}>
               <Text style={styles.surgeAlertText}>
-                ⚡ Surge pricing active: {surgeMultiplier}x fare due to heavy flooding.
+                ⚡ Monsoon Surge pricing active: {surgeMultiplier}x
               </Text>
             </View>
 
@@ -335,7 +354,9 @@ export const PassengerHome: React.FC = () => {
                     ]}
                     onPress={() => selectBoat(boat.id)}
                   >
-                    <Text style={styles.vesselEmoji}>{boat.emoji}</Text>
+                    <View style={styles.vesselIconWrapper}>
+                      {getVesselIcon(boat.id, isSelected ? '#FB8500' : '#00B4D8', 36)}
+                    </View>
                     <View style={styles.vesselInfo}>
                       <View style={styles.vesselTitleRow}>
                         <Text style={styles.vesselName}>{boat.name}</Text>
@@ -363,11 +384,10 @@ export const PassengerHome: React.FC = () => {
               onPress={() => setShowPaymentModal(true)}
             >
               <Text style={styles.paymentLabel}>
-                💳 Payment Method:{' '}
-                <Text style={styles.paymentVal}>
+                Payment: <Text style={styles.paymentVal}>
                   {paymentMethod === 'cash' && 'Cash (Wet Takas)'}
                   {paymentMethod === 'bkash' && 'bKash (Mobile Wallet)'}
-                  {paymentMethod === 'sandals' && 'Trade Sandals 👞'}
+                  {paymentMethod === 'sandals' && 'Trade Sandals'}
                 </Text>
               </Text>
               <Text style={styles.paymentChange}>Change ➔</Text>
@@ -382,7 +402,7 @@ export const PassengerHome: React.FC = () => {
               disabled={!selectedBoatCategory}
             >
               <Text style={styles.submitBtnText}>
-                Confirm Booking {selectedBoatCategory && `(${BOATS.find(b => b.id === selectedBoatCategory)?.emoji})`}
+                Confirm Ride Request
               </Text>
             </TouchableOpacity>
           </View>
@@ -393,15 +413,15 @@ export const PassengerHome: React.FC = () => {
           <View style={styles.searchSheet}>
             <View style={styles.searchAnimBox}>
               <View style={styles.scanRipple} />
-              <Text style={styles.largeRadarEmoji}>📡</Text>
+              <View style={styles.scanSpinner} />
             </View>
-            <Text style={styles.searchHeader}>Matching with nearby launchers...</Text>
+            <Text style={styles.searchHeader}>Matching with nearby launch captains...</Text>
             <Text style={styles.searchSub}>
-              Estimated match wait time: 12 seconds
+              Checking waterlogged streets & waterway logs
             </Text>
             <View style={styles.funnySearchStatusCard}>
               <Text style={styles.funnySearchText}>
-                " Contacting Babu Mia... Checking rickshaw-congestion levels... "
+                " Waving to nearby captains... Evaluating dry sock levels... "
               </Text>
             </View>
             <TouchableOpacity style={styles.cancelBtn} onPress={cancelRide}>
@@ -414,16 +434,20 @@ export const PassengerHome: React.FC = () => {
         {appState === 'accepted' && activeRide && (
           <View style={styles.acceptedSheet}>
             <View style={styles.captainProfileBox}>
-              <Text style={styles.captainMatchTitle}>Captain on the Way! 🌊</Text>
+              <Text style={styles.captainMatchTitle}>Vessel Dispatched</Text>
               <View style={styles.captainCardContent}>
-                <Text style={styles.captainAvatar}>{activeRide.captain.emoji}</Text>
+                <View style={styles.captainMonogramBox}>
+                  <Text style={styles.captainMonogramText}>
+                    {getMonogram(activeRide.captain.name)}
+                  </Text>
+                </View>
                 <View style={styles.captainDetailsCol}>
                   <Text style={styles.captainTitleName}>
-                    {activeRide.captain.name} ★ {activeRide.captain.rating} ({activeRide.captain.tripsCount} rows)
+                    {activeRide.captain.name} | Rating: {activeRide.captain.rating} ({activeRide.captain.tripsCount} trips)
                   </Text>
                   <Text style={styles.captainTitleBio}>"{activeRide.captain.bio}"</Text>
                   <Text style={styles.vesselInfoLabel}>
-                    Vessel: {activeRide.captain.boatName} ({activeRide.captain.boatNumber})
+                    Boat: {activeRide.captain.boatName} ({activeRide.captain.boatNumber})
                   </Text>
                 </View>
               </View>
@@ -435,13 +459,13 @@ export const PassengerHome: React.FC = () => {
                 style={styles.commButton}
                 onPress={() => setShowChatModal(true)}
               >
-                <Text style={styles.commBtnText}>💬 Chat with Captain</Text>
+                <Text style={styles.commBtnText}>Message Captain</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.commButton, styles.sosButton]}
                 onPress={triggerSOS}
               >
-                <Text style={styles.commBtnText}>🚨 Request SOS</Text>
+                <Text style={styles.commBtnText}>Emergency SOS</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -451,13 +475,13 @@ export const PassengerHome: React.FC = () => {
         {appState === 'ride' && activeRide && (
           <View style={styles.rideProgressSheet}>
             <View style={styles.rideProgressHeader}>
-              <Text style={styles.sheetTitle}>Heading to Destination</Text>
+              <Text style={styles.sheetTitle}>Commute in Progress</Text>
               <TouchableOpacity
                 style={styles.chatBubbleTrigger}
                 onPress={() => setShowChatModal(true)}
               >
                 <Text style={styles.chatTriggerText}>
-                  💬 Chat ({chatMessages.filter(m => m.sender === 'captain').length})
+                  Messages ({chatMessages.filter(m => m.sender === 'captain').length})
                 </Text>
               </TouchableOpacity>
             </View>
@@ -488,10 +512,10 @@ export const PassengerHome: React.FC = () => {
             {/* Safety Options */}
             <View style={styles.safetyActionRow}>
               <TouchableOpacity style={styles.safetyOptionBtn} onPress={triggerSOS}>
-                <Text style={styles.safetyOptionText}>🚨 Request Life Jacket</Text>
+                <Text style={styles.safetyOptionText}>Request Life Jacket</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.safetyOptionBtn} onPress={cancelRide}>
-                <Text style={styles.safetyOptionText}>❌ Cancel Commute</Text>
+                <Text style={styles.safetyOptionText}>Cancel Trip</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -500,53 +524,47 @@ export const PassengerHome: React.FC = () => {
         {/* Invoice Summary Sheet */}
         {appState === 'summary' && completedRide && (
           <View style={styles.summarySheet}>
-            <Text style={styles.sheetTitle}>Trip Receipt 🧾</Text>
+            <Text style={styles.sheetTitle}>Receipt Summary</Text>
             <Text style={styles.receiptIntro}>
-              Thank you for commuting with Dubao. Fares debited securely.
+              Invoice details processed securely through dry wallet.
             </Text>
 
             <ScrollView style={styles.receiptDetailsScroll}>
               <View style={styles.invoiceRow}>
-                <Text style={styles.invoiceLabel}>Pickup Harbor</Text>
-                <Text style={styles.invoiceValue}>{completedRide.pickup}</Text>
+                <Text style={styles.invoiceLabel}>Pickup Point</Text>
+                <Text style={styles.invoiceValue}>{completedRide.pickup.split(' ')[0]}</Text>
               </View>
               <View style={styles.invoiceRow}>
-                <Text style={styles.invoiceLabel}>Destination Harbor</Text>
-                <Text style={styles.invoiceValue}>{completedRide.destination}</Text>
+                <Text style={styles.invoiceLabel}>Destination Point</Text>
+                <Text style={styles.invoiceValue}>{completedRide.destination.split(' ')[0]}</Text>
               </View>
               <View style={styles.invoiceRow}>
-                <Text style={styles.invoiceLabel}>Distance Traveled</Text>
-                <Text style={styles.invoiceValue}>{completedRide.distanceKm} km</Text>
+                <Text style={styles.invoiceLabel}>Vessel Class</Text>
+                <Text style={styles.invoiceValue}>{completedRide.boat.name}</Text>
               </View>
               <View style={styles.invoiceRow}>
-                <Text style={styles.invoiceLabel}>Boat Category</Text>
-                <Text style={styles.invoiceValue}>
-                  {completedRide.boat.emoji} {completedRide.boat.name}
-                </Text>
-              </View>
-              <View style={styles.invoiceRow}>
-                <Text style={styles.invoiceLabel}>Payment Method</Text>
+                <Text style={styles.invoiceLabel}>Payment</Text>
                 <Text style={styles.invoiceValue}>{completedRide.paymentMethod.toUpperCase()}</Text>
               </View>
               <View style={styles.invoiceDivider} />
               <View style={styles.invoiceRow}>
-                <Text style={styles.invoiceLabel}>Base Vessel Fare</Text>
+                <Text style={styles.invoiceLabel}>Vessel Fare</Text>
                 <Text style={styles.invoiceValue}>৳{completedRide.boat.baseFare}</Text>
               </View>
               <View style={styles.invoiceRow}>
-                <Text style={styles.invoiceLabel}>Distance Cost</Text>
+                <Text style={styles.invoiceLabel}>Commute Distance Cost</Text>
                 <Text style={styles.invoiceValue}>
                   ৳{Math.round(completedRide.distanceKm * completedRide.boat.perKm)}
                 </Text>
               </View>
               {completedRide.umbrellaTaxApplied && (
                 <View style={styles.invoiceRow}>
-                  <Text style={styles.invoiceLabel}>Umbrella Tax ☂️</Text>
+                  <Text style={styles.invoiceLabel}>Umbrella Tax</Text>
                   <Text style={styles.invoiceValue}>৳{completedRide.boat.umbrellaTax}</Text>
                 </View>
               )}
               <View style={styles.invoiceRow}>
-                <Text style={styles.invoiceLabel}>Rainy Surge (2.2x)</Text>
+                <Text style={styles.invoiceLabel}>Monsoon Surge multiplier</Text>
                 <Text style={styles.invoiceValue}>
                   ৳{Math.round(
                     (completedRide.boat.baseFare +
@@ -557,13 +575,13 @@ export const PassengerHome: React.FC = () => {
               </View>
               {activePromo && (
                 <View style={[styles.invoiceRow, styles.promoDiscountRow]}>
-                  <Text style={styles.promoDiscountLabel}>Promo WET50 Discount</Text>
+                  <Text style={styles.promoDiscountLabel}>Promo WET50</Text>
                   <Text style={styles.promoDiscountVal}>- ৳{activePromo.discount}</Text>
                 </View>
               )}
               <View style={styles.invoiceDivider} />
               <View style={[styles.invoiceRow, styles.totalRow]}>
-                <Text style={styles.totalLabel}>Grand Total</Text>
+                <Text style={styles.totalLabel}>Amount Paid</Text>
                 <Text style={styles.totalValue}>৳{completedRide.fare}</Text>
               </View>
             </ScrollView>
@@ -577,7 +595,7 @@ export const PassengerHome: React.FC = () => {
                 rateRide(5, 'Excellent row!', []);
               }}
             >
-              <Text style={styles.submitBtnText}>Proceed to Rating ★</Text>
+              <Text style={styles.submitBtnText}>Confirm and Complete</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -647,7 +665,7 @@ export const PassengerHome: React.FC = () => {
       <Modal visible={showPaymentModal} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <View style={styles.modalSheet}>
-            <Text style={styles.modalHeaderTitle}>Vessel Payment Methods</Text>
+            <Text style={styles.modalHeaderTitle}>Payment Methods</Text>
             
             <TouchableOpacity
               style={[styles.payOptionRow, paymentMethod === 'cash' && styles.payOptionActive]}
@@ -656,10 +674,9 @@ export const PassengerHome: React.FC = () => {
                 setShowPaymentModal(false);
               }}
             >
-              <Text style={styles.payOptionEmoji}>💵</Text>
-              <View style={styles.payOptionTexts}>
+              <View style={styles.payOptionTextContainer}>
                 <Text style={styles.payOptionTitle}>Cash (Wet Takas)</Text>
-                <Text style={styles.payOptionDesc}>Pay physical paper money. Keep in dry bags.</Text>
+                <Text style={styles.payOptionDesc}>Pay physical paper money directly to captain.</Text>
               </View>
             </TouchableOpacity>
 
@@ -670,10 +687,9 @@ export const PassengerHome: React.FC = () => {
                 setShowPaymentModal(false);
               }}
             >
-              <Text style={styles.payOptionEmoji}>📱</Text>
-              <View style={styles.payOptionTexts}>
+              <View style={styles.payOptionTextContainer}>
                 <Text style={styles.payOptionTitle}>bKash (Mobile Wallet)</Text>
-                <Text style={styles.payOptionDesc}>Instant safe mobile money. 100% waterproof transaction.</Text>
+                <Text style={styles.payOptionDesc}>Instant safe mobile money. 100% waterproof transfer.</Text>
               </View>
             </TouchableOpacity>
 
@@ -684,10 +700,9 @@ export const PassengerHome: React.FC = () => {
                 setShowPaymentModal(false);
               }}
             >
-              <Text style={styles.payOptionEmoji}>👞</Text>
-              <View style={styles.payOptionTexts}>
+              <View style={styles.payOptionTextContainer}>
                 <Text style={styles.payOptionTitle}>Sandal Trade-in</Text>
-                <Text style={styles.payOptionDesc}>Trade leather shoes for fare. Subject to captain wear check.</Text>
+                <Text style={styles.payOptionDesc}>Trade leather shoes for fare credit. Subject to captain check.</Text>
               </View>
             </TouchableOpacity>
 
@@ -738,7 +753,7 @@ export const PassengerHome: React.FC = () => {
             <View style={styles.chatInputBar}>
               <TextInput
                 style={styles.chatTextInput}
-                placeholder="Send a dry text message..."
+                placeholder="Send a text message..."
                 placeholderTextColor="#64748B"
                 value={chatInput}
                 onChangeText={setChatInput}
@@ -757,15 +772,15 @@ export const PassengerHome: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0B0F19',
   },
   topAppBar: {
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 16,
-    backgroundColor: 'rgba(1, 42, 74, 0.95)',
+    backgroundColor: '#0B0F19',
     borderBottomWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
     position: 'relative',
   },
   brandRow: {
@@ -773,77 +788,79 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   appTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#00B4D8',
-    letterSpacing: 0.5,
+    letterSpacing: 1.5,
   },
   badgeLive: {
-    backgroundColor: '#EF4444',
-    borderRadius: 6,
+    backgroundColor: '#00B4D8',
+    borderRadius: 4,
     paddingHorizontal: 6,
     paddingVertical: 1,
     marginLeft: 8,
   },
   badgeLiveText: {
-    color: '#ffffff',
+    color: '#0B0F19',
     fontSize: 8,
     fontWeight: 'bold',
   },
   floodLevel: {
     fontSize: 10,
-    color: '#94A3B8',
+    color: '#64748B',
     marginTop: 4,
   },
   logoutBtn: {
     position: 'absolute',
     right: 20,
     top: 20,
-    backgroundColor: '#013A63',
-    borderRadius: 8,
+    backgroundColor: '#1E293B',
+    borderRadius: 6,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
   logoutBtnText: {
     color: '#E2E8F0',
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: 'bold',
   },
   toastBanner: {
     backgroundColor: '#FB8500',
-    paddingVertical: 12,
+    paddingVertical: 8,
     paddingHorizontal: 16,
     alignItems: 'center',
     zIndex: 100,
   },
   toastText: {
     color: '#ffffff',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
   },
   mapContainer: {
     paddingHorizontal: 16,
-    marginTop: 10,
+    marginTop: 6,
   },
   sheetContainer: {
     flex: 1,
-    backgroundColor: '#013A63',
+    backgroundColor: '#0B0F19',
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
     paddingTop: 20,
     marginTop: -12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -6 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.3,
     shadowRadius: 16,
     elevation: 8,
+    borderTopWidth: 1,
+    borderColor: '#1E293B',
   },
   scrollPanel: {
     paddingHorizontal: 20,
     paddingBottom: 40,
   },
   promoCard: {
-    backgroundColor: 'rgba(1, 73, 124, 0.7)',
+    backgroundColor: '#0F172A',
     borderRadius: 16,
     padding: 16,
     flexDirection: 'row',
@@ -851,15 +868,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#0163E8',
+    borderColor: '#1E293B',
   },
   promoTextColumn: {
     flex: 1,
     marginRight: 10,
   },
   promoBadge: {
-    backgroundColor: '#FB8500',
-    color: '#ffffff',
+    backgroundColor: '#00B4D8',
+    color: '#0B0F19',
     fontSize: 8,
     fontWeight: 'bold',
     borderRadius: 4,
@@ -870,11 +887,11 @@ const styles = StyleSheet.create({
   },
   promoHeading: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   promoDesc: {
-    color: '#CBD5E1',
+    color: '#64748B',
     fontSize: 11,
     marginTop: 4,
   },
@@ -882,8 +899,19 @@ const styles = StyleSheet.create({
     color: '#00B4D8',
     fontWeight: 'bold',
   },
-  promoCardEmoji: {
-    fontSize: 36,
+  promoVectorPlaceholder: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#1E293B',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  promoVectorCircle: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#00B4D8',
   },
   quickActionsGrid: {
     flexDirection: 'row',
@@ -892,17 +920,22 @@ const styles = StyleSheet.create({
   },
   quickActionBox: {
     flex: 1,
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 16,
-    padding: 12,
+    padding: 14,
     alignItems: 'center',
     marginHorizontal: 4,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
-  quickActionEmoji: {
-    fontSize: 32,
-    marginBottom: 8,
+  quickActionIconWrapper: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#1E293B',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
   },
   quickActionLabel: {
     color: '#ffffff',
@@ -917,13 +950,13 @@ const styles = StyleSheet.create({
   searchBarTrigger: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 16,
     paddingHorizontal: 16,
-    paddingVertical: 18,
+    paddingVertical: 16,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   searchBarDot: {
     width: 8,
@@ -933,36 +966,46 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   searchBarText: {
-    color: '#94A3B8',
-    fontSize: 15,
+    color: '#64748B',
+    fontSize: 14,
     fontWeight: '600',
   },
   sectionHeader: {
     color: '#E2E8F0',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
     marginBottom: 10,
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 1.2,
   },
   historyRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 12,
     padding: 12,
     marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#1E293B',
   },
-  historyIcon: {
-    fontSize: 16,
+  historyCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#1E293B',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 12,
+  },
+  historyCircleText: {
+    fontSize: 12,
   },
   historyTextContainer: {
     flex: 1,
   },
   historyTitle: {
     color: '#ffffff',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 'bold',
   },
   historySub: {
@@ -977,16 +1020,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   achievementBadge: {
-    backgroundColor: '#01497C',
+    backgroundColor: '#0F172A',
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
     marginRight: 8,
     borderWidth: 1,
-    borderColor: '#0163E8',
+    borderColor: '#1E293B',
   },
   achievementBadgeText: {
-    color: '#ffffff',
+    color: '#CBD5E1',
     fontSize: 10,
     fontWeight: 'bold',
   },
@@ -1001,7 +1044,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sheetTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#ffffff',
   },
@@ -1010,25 +1053,25 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   closeText: {
-    color: '#94A3B8',
-    fontSize: 14,
+    color: '#64748B',
+    fontSize: 13,
     fontWeight: 'bold',
   },
   inputTrigger: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     marginBottom: 12,
   },
   nodeIndicator: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
     marginRight: 12,
   },
   inputText: {
@@ -1038,18 +1081,18 @@ const styles = StyleSheet.create({
   },
   submitBtn: {
     backgroundColor: '#FB8500',
-    borderRadius: 14,
+    borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: 10,
   },
   disabledBtn: {
-    backgroundColor: '#64748B',
+    backgroundColor: '#1E293B',
     opacity: 0.5,
   },
   submitBtnText: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   bookingSheet: {
@@ -1069,9 +1112,9 @@ const styles = StyleSheet.create({
   },
   promoTextInput: {
     flex: 1,
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -1079,7 +1122,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   promoApplyBtn: {
-    backgroundColor: '#01497C',
+    backgroundColor: '#1E293B',
     borderRadius: 8,
     paddingHorizontal: 16,
     justifyContent: 'center',
@@ -1091,19 +1134,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   promoMsgText: {
-    color: '#2A9D8F',
+    color: '#10B981',
     fontSize: 11,
     fontWeight: 'bold',
     marginBottom: 8,
   },
   surgeAlert: {
-    backgroundColor: 'rgba(251, 133, 0, 0.15)',
+    backgroundColor: 'rgba(251, 133, 0, 0.1)',
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#FB8500',
+    borderColor: 'rgba(251, 133, 0, 0.25)',
   },
   surgeAlertText: {
     color: '#FB8500',
@@ -1117,20 +1160,18 @@ const styles = StyleSheet.create({
   vesselItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 12,
     padding: 12,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   vesselItemSelected: {
     borderColor: '#FB8500',
-    backgroundColor: 'rgba(251, 133, 0, 0.1)',
-    borderWidth: 2,
+    backgroundColor: 'rgba(251, 133, 0, 0.05)',
   },
-  vesselEmoji: {
-    fontSize: 32,
+  vesselIconWrapper: {
     marginRight: 12,
   },
   vesselInfo: {
@@ -1146,25 +1187,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   vesselCapacity: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 10,
     marginLeft: 8,
   },
   vesselBadge: {
-    backgroundColor: '#00B4D8',
+    backgroundColor: '#1E293B',
     borderRadius: 4,
-    paddingHorizontal: 4,
-    paddingVertical: 1,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
     marginLeft: 8,
   },
   vesselBadgeText: {
-    color: '#ffffff',
-    fontSize: 7,
+    color: '#00B4D8',
+    fontSize: 8,
     fontWeight: 'bold',
   },
   vesselDesc: {
-    color: '#94A3B8',
-    fontSize: 10,
+    color: '#64748B',
+    fontSize: 11,
     marginTop: 2,
   },
   vesselFareBox: {
@@ -1172,7 +1213,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   vesselFare: {
-    color: '#00B4D8',
+    color: '#ffffff',
     fontSize: 15,
     fontWeight: 'bold',
   },
@@ -1184,15 +1225,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 10,
     padding: 12,
     marginVertical: 10,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   paymentLabel: {
-    color: '#CBD5E1',
+    color: '#64748B',
     fontSize: 12,
   },
   paymentVal: {
@@ -1211,47 +1252,54 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   searchAnimBox: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: '#012A4A',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#0F172A',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
     marginVertical: 16,
+    borderWidth: 1,
+    borderColor: '#1E293B',
   },
   scanRipple: {
     position: 'absolute',
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 1.5,
+    borderColor: '#00B4D8',
+    opacity: 0.3,
+  },
+  scanSpinner: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
     borderWidth: 2,
     borderColor: '#00B4D8',
-    opacity: 0.5,
-  },
-  largeRadarEmoji: {
-    fontSize: 36,
+    borderTopColor: 'transparent',
   },
   searchHeader: {
     color: '#ffffff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   searchSub: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 12,
     marginTop: 4,
     textAlign: 'center',
   },
   funnySearchStatusCard: {
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 10,
     padding: 12,
     width: '100%',
     marginVertical: 16,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   funnySearchText: {
     color: '#FB8500',
@@ -1273,35 +1321,49 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   captainProfileBox: {
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   captainMatchTitle: {
-    color: '#2A9D8F',
-    fontSize: 15,
+    color: '#10B981',
+    fontSize: 13,
     fontWeight: 'bold',
     marginBottom: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   captainCardContent: {
     flexDirection: 'row',
   },
-  captainAvatar: {
-    fontSize: 44,
+  captainMonogramBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#1E293B',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 16,
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
+  captainMonogramText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   captainDetailsCol: {
     flex: 1,
   },
   captainTitleName: {
     color: '#ffffff',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   captainTitleBio: {
-    color: '#CBD5E1',
+    color: '#64748B',
     fontSize: 11,
     fontStyle: 'italic',
     marginVertical: 4,
@@ -1318,14 +1380,17 @@ const styles = StyleSheet.create({
   },
   commButton: {
     flex: 1,
-    backgroundColor: '#01497C',
-    borderRadius: 12,
+    backgroundColor: '#1E293B',
+    borderRadius: 10,
     paddingVertical: 14,
     alignItems: 'center',
     marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: '#334155',
   },
   sosButton: {
-    backgroundColor: '#EF4444',
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    borderColor: '#EF4444',
   },
   commBtnText: {
     color: '#ffffff',
@@ -1343,22 +1408,24 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   chatBubbleTrigger: {
-    backgroundColor: '#00B4D8',
+    backgroundColor: '#1E293B',
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: '#334155',
   },
   chatTriggerText: {
-    color: '#ffffff',
+    color: '#00B4D8',
     fontSize: 10,
     fontWeight: 'bold',
   },
   funnyRideStatusBox: {
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
     marginBottom: 16,
   },
   liveActivityText: {
@@ -1372,15 +1439,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   trackBar: {
-    height: 8,
-    backgroundColor: '#012A4A',
-    borderRadius: 4,
+    height: 6,
+    backgroundColor: '#1E293B',
+    borderRadius: 3,
     overflow: 'hidden',
   },
   fillBar: {
     height: '100%',
     backgroundColor: '#00B4D8',
-    borderRadius: 4,
+    borderRadius: 3,
   },
   barLabelRow: {
     flexDirection: 'row',
@@ -1388,7 +1455,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   barLabel: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 10,
     fontWeight: 'bold',
   },
@@ -1398,13 +1465,13 @@ const styles = StyleSheet.create({
   },
   safetyOptionBtn: {
     flex: 1,
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 10,
     paddingVertical: 12,
     alignItems: 'center',
     marginHorizontal: 4,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   safetyOptionText: {
     color: '#CBD5E1',
@@ -1417,17 +1484,19 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   receiptIntro: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 11,
     marginTop: 4,
     marginBottom: 16,
   },
   receiptDetailsScroll: {
     maxHeight: 180,
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 12,
     padding: 14,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#1E293B',
   },
   invoiceRow: {
     flexDirection: 'row',
@@ -1435,7 +1504,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   invoiceLabel: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 11,
   },
   invoiceValue: {
@@ -1445,18 +1514,18 @@ const styles = StyleSheet.create({
   },
   invoiceDivider: {
     height: 1,
-    backgroundColor: '#013A63',
+    backgroundColor: '#1E293B',
     marginVertical: 10,
   },
   promoDiscountRow: {
     marginBottom: 4,
   },
   promoDiscountLabel: {
-    color: '#2A9D8F',
+    color: '#10B981',
     fontSize: 11,
   },
   promoDiscountVal: {
-    color: '#2A9D8F',
+    color: '#10B981',
     fontSize: 11,
     fontWeight: 'bold',
   },
@@ -1476,29 +1545,35 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
     justifyContent: 'flex-end',
   },
   modalSheet: {
-    backgroundColor: '#013A63',
+    backgroundColor: '#0B0F19',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     padding: 20,
     maxHeight: '70%',
+    borderTopWidth: 1,
+    borderColor: '#1E293B',
   },
   modalHeaderTitle: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
   },
   modalListItem: {
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderRadius: 10,
     marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#1E293B',
   },
   modalListItemActive: {
     borderColor: '#FB8500',
@@ -1515,29 +1590,25 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   modalCloseBtnText: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 13,
     fontWeight: 'bold',
   },
   payOptionRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 12,
     padding: 14,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   payOptionActive: {
     borderColor: '#FB8500',
     borderWidth: 1.5,
   },
-  payOptionEmoji: {
-    fontSize: 24,
-    marginRight: 14,
-  },
-  payOptionTexts: {
+  payOptionTextContainer: {
     flex: 1,
   },
   payOptionTitle: {
@@ -1546,7 +1617,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   payOptionDesc: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 10,
     marginTop: 2,
   },
@@ -1559,7 +1630,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
     paddingBottom: 12,
     marginBottom: 10,
   },
@@ -1596,7 +1667,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#0077B6',
   },
   chatBubbleCap: {
-    backgroundColor: '#01497C',
+    backgroundColor: '#1E293B',
+    borderWidth: 1,
+    borderColor: '#334155',
   },
   chatBubbleText: {
     color: '#ffffff',
@@ -1604,7 +1677,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   chatBubbleTime: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 8,
     textAlign: 'right',
     marginTop: 4,
@@ -1625,16 +1698,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 10,
     borderTopWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   chatTextInput: {
     flex: 1,
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
     color: '#ffffff',
     fontSize: 13,
+    borderWidth: 1,
+    borderColor: '#1E293B',
   },
   chatSendBtn: {
     backgroundColor: '#FB8500',

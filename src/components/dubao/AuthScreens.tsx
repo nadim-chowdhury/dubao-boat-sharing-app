@@ -11,23 +11,48 @@ import {
 } from 'react-native';
 import { useAppState } from '@/context/AppContext';
 import { RainEffect } from './RainEffect';
+import { KayakIcon, FerryIcon } from './VesselIcons';
+
+// Sleek SVG waves / boat logo for Splash
+const LogoVector: React.FC<{ size?: number; color?: string }> = ({ size = 64, color = '#00B4D8' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <path
+      d="M12 3L2 14H22L12 3Z"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M2 17C6 19 18 19 22 17"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M4 20C8 21.5 16 21.5 20 20"
+      stroke={color}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
 
 export const SplashView: React.FC = () => {
   return (
     <View style={styles.splashContainer}>
       <RainEffect />
       <View style={styles.logoWrapper}>
-        <Text style={styles.splashLogo}>🚣‍♂️</Text>
-        <Text style={styles.splashTitle}>Dubao</Text>
+        <LogoVector size={80} />
+        <Text style={styles.splashTitle}>DUBAO</Text>
         <Text style={styles.splashTagline}>
           "When Dhaka roads become rivers, ride the vibe."
         </Text>
       </View>
       <View style={styles.splashFooter}>
-        <Text style={styles.splashLoadingText}>Inflating Life Jackets...</Text>
-        <View style={styles.loadingTrack}>
-          <View style={styles.loadingBar} />
-        </View>
+        <Text style={styles.splashLoadingText}>Synchronizing Waterways</Text>
+        <div style={styles.loadingTrack}>
+          <div style={styles.loadingBar} />
+        </div>
       </View>
     </View>
   );
@@ -41,7 +66,7 @@ export const LoginView: React.FC = () => {
 
   const handleLogin = () => {
     if (!name.trim()) {
-      setError('Please enter your name to start rowing!');
+      setError('Please enter your name.');
       return;
     }
     setError('');
@@ -56,14 +81,14 @@ export const LoginView: React.FC = () => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <RainEffect />
         <View style={styles.loginCard}>
-          <Text style={styles.loginEmoji}>🌧️</Text>
+          <LogoVector size={48} />
           <Text style={styles.loginTitle}>Welcome to Dubao</Text>
           <Text style={styles.loginSubtitle}>
-            Your ultimate waterlog transport solution.
+            Your waterlog transport logistics solution.
           </Text>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Passenger / Captain Name</Text>
+            <Text style={styles.label}>Commuter / Captain Name</Text>
             <TextInput
               style={styles.input}
               placeholder="e.g. Abul Kalam"
@@ -74,7 +99,7 @@ export const LoginView: React.FC = () => {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Phone Number (Dry Line)</Text>
+            <Text style={styles.label}>Dry Phone Line</Text>
             <TextInput
               style={styles.input}
               placeholder="e.g. 01712345678"
@@ -88,11 +113,11 @@ export const LoginView: React.FC = () => {
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>Grab a Paddle 🚣</Text>
+            <Text style={styles.loginButtonText}>Connect to Fleet</Text>
           </TouchableOpacity>
 
           <Text style={styles.disclaimerText}>
-            *By joining, you agree that you can swim at least 10 meters or hold a high-quality umbrella.
+            *Please ensure you possess water-resistant footwear prior to requesting vessel transit.
           </Text>
         </View>
       </ScrollView>
@@ -107,18 +132,20 @@ export const RoleSelectionView: React.FC = () => {
     <View style={styles.roleContainer}>
       <RainEffect />
       <View style={styles.roleCard}>
-        <Text style={styles.roleWelcome}>Hello, {userName}!</Text>
-        <Text style={styles.rolePrompt}>Select Your Monsoon Status</Text>
+        <Text style={styles.roleWelcome}>Welcome, {userName}</Text>
+        <Text style={styles.rolePrompt}>Select Vessel Role</Text>
 
         <TouchableOpacity
           style={[styles.roleOption, styles.rolePassenger]}
           onPress={() => selectRole('passenger')}
         >
-          <Text style={styles.roleOptionEmoji}>🚣‍♂️</Text>
+          <View style={styles.roleOptionIconWrapper}>
+            <KayakIcon color="#ffffff" size={32} />
+          </View>
           <View style={styles.roleOptionTextWrapper}>
-            <Text style={styles.roleOptionTitle}>I need a Boat (Passenger)</Text>
+            <Text style={styles.roleOptionTitle}>Request a Ride (Passenger)</Text>
             <Text style={styles.roleOptionDesc}>
-              Escape waterlogged traffic, dodge floating sandals, and travel in style.
+              Bypass road closures and travel via floating launch corridors.
             </Text>
           </View>
         </TouchableOpacity>
@@ -127,11 +154,13 @@ export const RoleSelectionView: React.FC = () => {
           style={[styles.roleOption, styles.roleCaptain]}
           onPress={() => selectRole('captain')}
         >
-          <Text style={styles.roleOptionEmoji}>👨‍✈️</Text>
+          <View style={styles.roleOptionIconWrapper}>
+            <FerryIcon color="#ffffff" size={32} />
+          </View>
           <View style={styles.roleOptionTextWrapper}>
-            <Text style={styles.roleOptionTitle}>I have a Boat (Captain)</Text>
+            <Text style={styles.roleOptionTitle}>Register Boat (Captain)</Text>
             <Text style={styles.roleOptionDesc}>
-              Row commuters through flooded alleyways and earn massive imaginary Takas.
+              Navigate passengers through flooded districts and log simulated earnings.
             </Text>
           </View>
         </TouchableOpacity>
@@ -143,7 +172,7 @@ export const RoleSelectionView: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0B0F19',
   },
   scrollContainer: {
     flexGrow: 1,
@@ -152,7 +181,7 @@ const styles = StyleSheet.create({
   },
   splashContainer: {
     flex: 1,
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0B0F19',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 64,
@@ -162,24 +191,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 100,
   },
-  splashLogo: {
-    fontSize: 72,
-    marginBottom: 16,
-  },
   splashTitle: {
     color: '#00B4D8',
-    fontSize: 48,
+    fontSize: 32,
     fontWeight: '900',
-    letterSpacing: 2,
+    letterSpacing: 3,
+    marginTop: 16,
   },
   splashTagline: {
-    color: '#E2E8F0',
-    fontSize: 16,
+    color: '#64748B',
+    fontSize: 14,
     textAlign: 'center',
     fontStyle: 'italic',
-    marginTop: 16,
+    marginTop: 12,
     paddingHorizontal: 20,
-    lineHeight: 24,
+    lineHeight: 22,
   },
   splashFooter: {
     alignItems: 'center',
@@ -187,28 +213,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   splashLoadingText: {
-    color: '#94A3B8',
-    fontSize: 12,
+    color: '#64748B',
+    fontSize: 11,
     marginBottom: 8,
     fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   loadingTrack: {
     width: '100%',
-    height: 4,
-    backgroundColor: '#013A63',
-    borderRadius: 2,
+    height: 3,
+    backgroundColor: '#1E293B',
+    borderRadius: 1.5,
     overflow: 'hidden',
   },
   loadingBar: {
     width: '60%',
     height: '100%',
-    backgroundColor: '#FB8500',
-    borderRadius: 2,
+    backgroundColor: '#00B4D8',
+    borderRadius: 1.5,
   },
   loginCard: {
-    backgroundColor: 'rgba(1, 42, 74, 0.85)',
+    backgroundColor: '#0F172A',
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
     borderRadius: 24,
     padding: 24,
     alignItems: 'center',
@@ -219,19 +247,16 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     elevation: 8,
   },
-  loginEmoji: {
-    fontSize: 48,
-    marginBottom: 12,
-  },
   loginTitle: {
     color: '#ffffff',
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginTop: 16,
   },
   loginSubtitle: {
-    color: '#94A3B8',
-    fontSize: 14,
+    color: '#64748B',
+    fontSize: 13,
     textAlign: 'center',
     marginTop: 6,
     marginBottom: 28,
@@ -241,22 +266,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   label: {
-    color: '#E2E8F0',
-    fontSize: 12,
+    color: '#CBD5E1',
+    fontSize: 11,
     fontWeight: 'bold',
     marginBottom: 8,
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 1.2,
   },
   input: {
-    backgroundColor: '#013A63',
+    backgroundColor: '#0F172A',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 15,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   loginButton: {
     backgroundColor: '#FB8500',
@@ -265,20 +290,15 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: 10,
-    shadowColor: '#FB8500',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
   },
   loginButtonText: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   errorText: {
     color: '#EF4444',
-    fontSize: 14,
+    fontSize: 13,
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -291,14 +311,14 @@ const styles = StyleSheet.create({
   },
   roleContainer: {
     flex: 1,
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0B0F19',
     justifyContent: 'center',
     padding: 24,
   },
   roleCard: {
-    backgroundColor: 'rgba(1, 42, 74, 0.85)',
+    backgroundColor: '#0F172A',
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
     borderRadius: 24,
     padding: 24,
     shadowColor: '#000',
@@ -309,13 +329,13 @@ const styles = StyleSheet.create({
   },
   roleWelcome: {
     color: '#00B4D8',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   rolePrompt: {
     color: '#ffffff',
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 6,
@@ -330,15 +350,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   rolePassenger: {
-    backgroundColor: '#013A63',
-    borderColor: '#01497C',
+    backgroundColor: '#0F172A',
+    borderColor: '#1E293B',
   },
   roleCaptain: {
-    backgroundColor: '#01497C',
-    borderColor: '#0163E8',
+    backgroundColor: '#0F172A',
+    borderColor: '#1E293B',
   },
-  roleOptionEmoji: {
-    fontSize: 36,
+  roleOptionIconWrapper: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#1E293B',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 16,
   },
   roleOptionTextWrapper: {
@@ -346,12 +371,12 @@ const styles = StyleSheet.create({
   },
   roleOptionTitle: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   roleOptionDesc: {
-    color: '#CBD5E1',
-    fontSize: 12,
+    color: '#64748B',
+    fontSize: 11,
     marginTop: 4,
     lineHeight: 16,
   },

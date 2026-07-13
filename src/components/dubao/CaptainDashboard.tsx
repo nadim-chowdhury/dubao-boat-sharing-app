@@ -7,12 +7,10 @@ import {
   TouchableOpacity,
   ScrollView,
   Vibration,
-  Dimensions,
 } from 'react-native';
 import { useAppState, BOATS } from '@/context/AppContext';
 import { MapView } from './MapView';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+import { getVesselIcon } from './VesselIcons';
 
 // Fictional trip logs
 interface TripLog {
@@ -115,14 +113,14 @@ export const CaptainDashboard: React.FC = () => {
     return (
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.topBar}>
-          <Text style={styles.topBarTitle}>Captain License Portal 👨‍✈️</Text>
+          <Text style={styles.topBarTitle}>Captain License Portal</Text>
           <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
             <Text style={styles.logoutBtnText}>Exit Registry</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.cardBox}>
-          <Text style={styles.cardHeading}>Monsoon Vessel Registration</Text>
+          <Text style={styles.cardHeading}>Vessel Registration</Text>
           <Text style={styles.cardSub}>
             Register your boat and join the elite fleet keeping Dhaka moving.
           </Text>
@@ -141,7 +139,9 @@ export const CaptainDashboard: React.FC = () => {
                     ]}
                     onPress={() => setSelectedCategory(boat.id)}
                   >
-                    <Text style={styles.categoryCardEmoji}>{boat.emoji}</Text>
+                    <View style={styles.categoryCardIconWrapper}>
+                      {getVesselIcon(boat.id, isSel ? '#FB8500' : '#CBD5E1', 20)}
+                    </View>
                     <Text style={styles.categoryCardName}>{boat.name.split(' ')[1]}</Text>
                   </TouchableOpacity>
                 );
@@ -150,7 +150,7 @@ export const CaptainDashboard: React.FC = () => {
           </View>
 
           <View style={styles.inputFormGroup}>
-            <Text style={styles.inputLabel}>Vessel Name (Fictional/Comedy)</Text>
+            <Text style={styles.inputLabel}>Vessel Name (Fictional)</Text>
             <TextInput
               style={styles.textInput}
               placeholder="e.g. Sonar Tori, Mirpur Surf King"
@@ -172,7 +172,7 @@ export const CaptainDashboard: React.FC = () => {
           </View>
 
           <TouchableOpacity style={styles.submitBtn} onPress={handleRegister}>
-            <Text style={styles.submitBtnText}>Obtain Vessel License 📜</Text>
+            <Text style={styles.submitBtnText}>Obtain Vessel License</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -186,7 +186,7 @@ export const CaptainDashboard: React.FC = () => {
         <View>
           <Text style={styles.topBarTitle}>Captain Console</Text>
           <Text style={styles.topBarSub}>
-            Licensed: {captainBoatName} ({BOATS.find(b => b.id === captainBoatCategory)?.emoji})
+            Vessel: {captainBoatName} | Class: {BOATS.find(b => b.id === captainBoatCategory)?.name}
           </Text>
         </View>
         <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
@@ -205,7 +205,7 @@ export const CaptainDashboard: React.FC = () => {
           {/* Earnings Analytics Grid */}
           <View style={styles.statsAnalyticsCard}>
             <View style={styles.statsHeader}>
-              <Text style={styles.statsLabel}>CURRENT WEEK EARNINGS</Text>
+              <Text style={styles.statsLabel}>WEEKLY EARNINGS</Text>
               <Text style={styles.statsTotalValue}>৳{captainEarnings.toLocaleString()}</Text>
             </View>
 
@@ -245,7 +245,7 @@ export const CaptainDashboard: React.FC = () => {
           {/* Quick Stats Grid */}
           <View style={styles.statsGrid}>
             <View style={styles.statGridBox}>
-              <Text style={styles.statBoxTitle}>Rows Completed</Text>
+              <Text style={styles.statBoxTitle}>Completed</Text>
               <Text style={styles.statBoxVal}>148</Text>
             </View>
             <View style={styles.statGridBox}>
@@ -274,7 +274,7 @@ export const CaptainDashboard: React.FC = () => {
             style={[styles.submitBtn, styles.onlineColorBtn]}
             onPress={() => setCaptainOnline(true)}
           >
-            <Text style={styles.submitBtnText}>Go Online (Scan Commuters) 🌧️</Text>
+            <Text style={styles.submitBtnText}>Go Online (Find Commuters)</Text>
           </TouchableOpacity>
         </ScrollView>
       )}
@@ -284,15 +284,15 @@ export const CaptainDashboard: React.FC = () => {
           <View style={styles.scanLayout}>
             <View style={styles.scanAnimationRingContainer}>
               <View style={styles.scanAnimationPulseRing} />
-              <Text style={styles.scanRadarCenterEmoji}>📡</Text>
+              <View style={styles.scanSpinner} />
             </View>
-            <Text style={styles.onlineStatusTitle}>Online & Ready to Row</Text>
+            <Text style={styles.onlineStatusTitle}>Online & Searching</Text>
             <Text style={styles.onlineStatusSub}>
-              Checking flood depths on Dhanmondi & Mirpur roads...
+              Checking waterlogged streets & commute requests
             </Text>
             <View style={styles.liveFeedPanel}>
-              <Text style={styles.liveFeedItem}>• Rain intensity: Heavy rainfall in Banani</Text>
-              <Text style={styles.liveFeedItem}>• Demand: Extreme booking volume near Mirpur 10</Text>
+              <Text style={styles.liveFeedItem}>• Rain index: Heavy rainfall in Banani Canal</Text>
+              <Text style={styles.liveFeedItem}>• Commuters: High booking volume near Mirpur Waterfalls</Text>
             </View>
           </View>
 
@@ -300,7 +300,7 @@ export const CaptainDashboard: React.FC = () => {
             style={[styles.submitBtn, styles.offlineColorBtn]}
             onPress={() => setCaptainOnline(false)}
           >
-            <Text style={styles.submitBtnText}>Go Offline (Take a Break)</Text>
+            <Text style={styles.submitBtnText}>Go Offline</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -309,34 +309,32 @@ export const CaptainDashboard: React.FC = () => {
         <View style={styles.sheetPanel}>
           <View style={styles.incomingBannerAlert}>
             <Text style={styles.incomingBannerAlertText}>
-              🚨 RIDE REQUEST RECEIVED ({countdown}s)
+              COMMUTE REQUEST RECEIVED ({countdown}s)
             </Text>
           </View>
 
           <View style={styles.requestOverviewCard}>
             <View style={styles.requestOverviewHeader}>
               <Text style={styles.requestBoatClass}>
-                Class:{' '}
-                {BOATS.find(b => b.id === incomingRequest.boatCategory)?.emoji}{' '}
-                {BOATS.find(b => b.id === incomingRequest.boatCategory)?.name}
+                Class: {BOATS.find(b => b.id === incomingRequest.boatCategory)?.name}
               </Text>
               <Text style={styles.requestFareTotal}>৳{incomingRequest.fare}</Text>
             </View>
             {incomingRequest.surgeMultiplier > 1 && (
               <View style={styles.reqSurgeBadge}>
                 <Text style={styles.reqSurgeBadgeText}>
-                  ⚡ Surge pricing {incomingRequest.surgeMultiplier}x applied
+                  Surge {incomingRequest.surgeMultiplier}x applied
                 </Text>
               </View>
             )}
 
             <View style={styles.routeBoxItem}>
-              <Text style={styles.routeBoxLabel}>PICKUP HARBOR</Text>
+              <Text style={styles.routeBoxLabel}>PICKUP PORT</Text>
               <Text style={styles.routeBoxVal}>{incomingRequest.pickup}</Text>
             </View>
 
             <View style={styles.routeBoxItem}>
-              <Text style={styles.routeBoxLabel}>DESTINATION HARBOR</Text>
+              <Text style={styles.routeBoxLabel}>DESTINATION PORT</Text>
               <Text style={styles.routeBoxVal}>{incomingRequest.destination}</Text>
             </View>
 
@@ -351,14 +349,14 @@ export const CaptainDashboard: React.FC = () => {
               style={[styles.splitBtn, styles.declineRequestBtn]}
               onPress={rejectIncomingRide}
             >
-              <Text style={styles.splitBtnText}>Decline ❌</Text>
+              <Text style={styles.splitBtnText}>Decline</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.splitBtn, styles.acceptRequestBtn]}
               onPress={acceptIncomingRide}
             >
-              <Text style={styles.splitBtnText}>Accept Row 🤝</Text>
+              <Text style={styles.splitBtnText}>Accept Row</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -366,9 +364,9 @@ export const CaptainDashboard: React.FC = () => {
 
       {captainState === 'navigating' && incomingRequest && (
         <View style={styles.sheetPanel}>
-          <Text style={styles.activeRowTitle}>Active Navigation Console</Text>
+          <Text style={styles.activeRowTitle}>Navigation Console</Text>
           <Text style={styles.activeRowRouteSub}>
-            📍 Destination: {incomingRequest.destination}
+            Destination: {incomingRequest.destination}
           </Text>
 
           <View style={styles.funnyNavigationActivityCard}>
@@ -384,14 +382,14 @@ export const CaptainDashboard: React.FC = () => {
 
           {rowProgress < 100 ? (
             <TouchableOpacity style={styles.paddlingWheelBtn} onPress={handleRowClick}>
-              <Text style={styles.paddlingWheelBtnText}>🚣 Click to Row Aggressively! 💨</Text>
+              <Text style={styles.paddlingWheelBtnText}>Row Aggressively</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
               style={[styles.submitBtn, styles.onlineColorBtn]}
               onPress={completeCaptainRide}
             >
-              <Text style={styles.submitBtnText}>Tie up at Harbor & Collect Fare 🏁</Text>
+              <Text style={styles.submitBtnText}>Tie up at Harbor & Collect Fare</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -400,11 +398,10 @@ export const CaptainDashboard: React.FC = () => {
       {captainState === 'completed' && incomingRequest && (
         <View style={styles.sheetPanel}>
           <View style={styles.completeFareBox}>
-            <Text style={styles.completeFareEmoji}>💸</Text>
-            <Text style={styles.completeFareTitle}>Row Complete! Fare Collected</Text>
+            <Text style={styles.completeFareTitle}>Commute Complete</Text>
             <Text style={styles.completeFareValue}>+ ৳{incomingRequest.fare}</Text>
             <Text style={styles.completeFareSub}>
-              Credited directly to your Dry Wallet. Keep rowing commuters to dry spots!
+              Fare credited directly to your Dry Wallet.
             </Text>
           </View>
 
@@ -420,12 +417,12 @@ export const CaptainDashboard: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0B0F19',
   },
   scrollContainer: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0B0F19',
     justifyContent: 'center',
   },
   topBar: {
@@ -435,35 +432,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 16,
-    backgroundColor: 'rgba(1, 42, 74, 0.95)',
+    backgroundColor: '#0B0F19',
     borderBottomWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   topBarTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#00B4D8',
+    letterSpacing: 0.5,
   },
   topBarSub: {
     fontSize: 10,
-    color: '#CBD5E1',
+    color: '#64748B',
     marginTop: 2,
   },
   logoutBtn: {
-    backgroundColor: '#01497C',
-    borderRadius: 8,
+    backgroundColor: '#1E293B',
+    borderRadius: 6,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
   logoutBtnText: {
     color: '#E2E8F0',
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: 'bold',
   },
   cardBox: {
-    backgroundColor: 'rgba(1, 42, 74, 0.85)',
+    backgroundColor: '#0F172A',
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
     borderRadius: 24,
     padding: 24,
     marginTop: 10,
@@ -475,7 +473,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   cardSub: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 11,
     textAlign: 'center',
     marginTop: 4,
@@ -486,12 +484,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputLabel: {
-    color: '#E2E8F0',
+    color: '#CBD5E1',
     fontSize: 11,
     fontWeight: 'bold',
     marginBottom: 8,
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 1.2,
   },
   categoryGrid: {
     flexDirection: 'row',
@@ -499,9 +497,9 @@ const styles = StyleSheet.create({
   },
   categoryCard: {
     flex: 1,
-    backgroundColor: '#013A63',
+    backgroundColor: '#0F172A',
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
     borderRadius: 12,
     padding: 10,
     alignItems: 'center',
@@ -509,8 +507,9 @@ const styles = StyleSheet.create({
   },
   categoryCardSel: {
     borderColor: '#FB8500',
-    backgroundColor: '#01497C',
-    borderWidth: 2,
+  },
+  categoryCardIconWrapper: {
+    marginBottom: 4,
   },
   categoryCardEmoji: {
     fontSize: 20,
@@ -522,56 +521,60 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   textInput: {
-    backgroundColor: '#013A63',
+    backgroundColor: '#0F172A',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     color: '#ffffff',
     fontSize: 15,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   submitBtn: {
     backgroundColor: '#FB8500',
-    borderRadius: 14,
+    borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: 10,
   },
   submitBtnText: {
     color: '#ffffff',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   onlineColorBtn: {
     backgroundColor: '#2A9D8F',
   },
   offlineColorBtn: {
-    backgroundColor: '#64748B',
+    backgroundColor: '#1E293B',
+    borderWidth: 1,
+    borderColor: '#334155',
   },
   mapContainer: {
     paddingHorizontal: 16,
-    marginTop: 10,
+    marginTop: 6,
   },
   sheetPanel: {
     flex: 1,
-    backgroundColor: '#013A63',
+    backgroundColor: '#0B0F19',
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
     padding: 20,
     marginTop: -12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -6 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.3,
     shadowRadius: 16,
     elevation: 8,
+    borderTopWidth: 1,
+    borderColor: '#1E293B',
   },
   statsAnalyticsCard: {
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
     marginBottom: 20,
   },
   statsHeader: {
@@ -581,9 +584,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   statsLabel: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 10,
     fontWeight: 'bold',
+    letterSpacing: 1.2,
   },
   statsTotalValue: {
     color: '#00B4D8',
@@ -602,9 +606,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   chartBarFill: {
-    width: 12,
-    backgroundColor: '#00B4D8',
-    borderRadius: 6,
+    width: 10,
+    backgroundColor: '#1E293B',
+    borderRadius: 5,
   },
   chartBarLabel: {
     color: '#64748B',
@@ -619,16 +623,16 @@ const styles = StyleSheet.create({
   },
   statGridBox: {
     flex: 1,
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 12,
     padding: 12,
     alignItems: 'center',
     marginHorizontal: 4,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   statBoxTitle: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 9,
     fontWeight: 'bold',
   },
@@ -640,20 +644,22 @@ const styles = StyleSheet.create({
   },
   sectionHeading: {
     color: '#E2E8F0',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
     marginBottom: 12,
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 1.2,
   },
   logItemRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 12,
     padding: 12,
     marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#1E293B',
   },
   logItemRoute: {
     color: '#ffffff',
@@ -677,23 +683,32 @@ const styles = StyleSheet.create({
     marginVertical: 12,
   },
   scanAnimationRingContainer: {
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
+    backgroundColor: '#0F172A',
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: '#1E293B',
   },
   scanAnimationPulseRing: {
     position: 'absolute',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 1.5,
+    borderColor: '#2A9D8F',
+    opacity: 0.3,
+  },
+  scanSpinner: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
     borderWidth: 2,
     borderColor: '#2A9D8F',
-    opacity: 0.6,
-  },
-  scanRadarCenterEmoji: {
-    fontSize: 32,
+    borderTopColor: 'transparent',
   },
   onlineStatusTitle: {
     color: '#ffffff',
@@ -701,20 +716,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   onlineStatusSub: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 11,
     textAlign: 'center',
     marginTop: 4,
     paddingHorizontal: 20,
   },
   liveFeedPanel: {
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 10,
     padding: 12,
     width: '100%',
     marginTop: 16,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
   },
   liveFeedItem: {
     color: '#CBD5E1',
@@ -735,11 +750,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   requestOverviewCard: {
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
     marginBottom: 16,
   },
   requestOverviewHeader: {
@@ -758,9 +773,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   reqSurgeBadge: {
-    backgroundColor: 'rgba(251, 133, 0, 0.15)',
+    backgroundColor: 'rgba(251, 133, 0, 0.1)',
     borderWidth: 1,
-    borderColor: '#FB8500',
+    borderColor: 'rgba(251, 133, 0, 0.25)',
     borderRadius: 6,
     paddingVertical: 3,
     paddingHorizontal: 8,
@@ -791,7 +806,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderTopWidth: 1,
-    borderColor: '#013A63',
+    borderColor: '#1E293B',
     paddingTop: 12,
     marginTop: 4,
   },
@@ -823,7 +838,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   activeRowTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#ffffff',
   },
@@ -834,12 +849,12 @@ const styles = StyleSheet.create({
     marginVertical: 6,
   },
   funnyNavigationActivityCard: {
-    backgroundColor: '#012A4A',
+    backgroundColor: '#0F172A',
     borderRadius: 12,
     padding: 16,
     marginVertical: 12,
     borderWidth: 1,
-    borderColor: '#01497C',
+    borderColor: '#1E293B',
     alignItems: 'center',
   },
   funnyNavStatusText: {
@@ -853,32 +868,28 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   progressLineTrack: {
-    height: 8,
-    backgroundColor: '#012A4A',
-    borderRadius: 4,
+    height: 6,
+    backgroundColor: '#1E293B',
+    borderRadius: 3,
     overflow: 'hidden',
     marginBottom: 8,
   },
   progressLineFill: {
     height: '100%',
     backgroundColor: '#00B4D8',
-    borderRadius: 4,
+    borderRadius: 3,
   },
   progressStatusLabel: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 10,
     fontWeight: 'bold',
     textAlign: 'right',
   },
   paddlingWheelBtn: {
     backgroundColor: '#FB8500',
-    borderRadius: 16,
+    borderRadius: 12,
     paddingVertical: 20,
     alignItems: 'center',
-    shadowColor: '#FB8500',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
   },
   paddlingWheelBtnText: {
     color: '#ffffff',
@@ -890,10 +901,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     marginVertical: 20,
-  },
-  completeFareEmoji: {
-    fontSize: 64,
-    marginBottom: 10,
   },
   completeFareTitle: {
     color: '#ffffff',
@@ -908,7 +915,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   completeFareSub: {
-    color: '#94A3B8',
+    color: '#64748B',
     fontSize: 11,
     textAlign: 'center',
     paddingHorizontal: 20,
