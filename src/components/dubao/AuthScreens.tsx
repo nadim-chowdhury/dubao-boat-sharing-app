@@ -9,32 +9,33 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import { useAppState } from '@/context/AppContext';
 import { RainEffect } from './RainEffect';
 import { KayakIcon, FerryIcon } from './VesselIcons';
 
 // Sleek SVG waves / boat logo for Splash
 const LogoVector: React.FC<{ size?: number; color?: string }> = ({ size = 64, color = '#00B4D8' }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
       d="M12 3L2 14H22L12 3Z"
       stroke={color}
       strokeWidth="2"
       strokeLinejoin="round"
     />
-    <path
+    <Path
       d="M2 17C6 19 18 19 22 17"
       stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
     />
-    <path
+    <Path
       d="M4 20C8 21.5 16 21.5 20 20"
       stroke={color}
       strokeWidth="1.5"
       strokeLinecap="round"
     />
-  </svg>
+  </Svg>
 );
 
 export const SplashView: React.FC = () => {
@@ -50,13 +51,14 @@ export const SplashView: React.FC = () => {
       </View>
       <View style={styles.splashFooter}>
         <Text style={styles.splashLoadingText}>Synchronizing Waterways</Text>
-        <div style={styles.loadingTrack}>
-          <div style={styles.loadingBar} />
-        </div>
+        <View style={styles.loadingTrack}>
+          <View style={styles.loadingBar} />
+        </View>
       </View>
     </View>
   );
 };
+
 
 export const LoginView: React.FC = () => {
   const { login } = useAppState();
