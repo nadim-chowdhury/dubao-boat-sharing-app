@@ -1,23 +1,18 @@
-import { Image } from 'expo-image';
 import { SymbolView } from 'expo-symbols';
-import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ExternalLink } from '@/components/external-link';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
-import { WebBadge } from '@/components/web-badge';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
 
-export default function TabTwoScreen() {
+export default function ExploreScreen() {
   const safeAreaInsets = useSafeAreaInsets();
   const insets = {
     ...safeAreaInsets,
     bottom: safeAreaInsets.bottom + BottomTabInset + Spacing.three,
   };
-  const theme = useTheme();
 
   const contentPlatformStyle = Platform.select({
     android: {
@@ -34,92 +29,100 @@ export default function TabTwoScreen() {
 
   return (
     <ScrollView
-      style={[styles.scrollView, { backgroundColor: theme.background }]}
+      style={[styles.scrollView, { backgroundColor: '#012A4A' }]}
       contentInset={insets}
       contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}>
       <ThemedView style={styles.container}>
-        <ThemedView style={styles.titleContainer}>
-          <ThemedText type="subtitle">Explore</ThemedText>
-          <ThemedText style={styles.centerText} themeColor="textSecondary">
-            This starter app includes example{'\n'}code to help you get started.
-          </ThemedText>
+        <View style={styles.titleContainer}>
+          <Text style={styles.emojiTitle}>🌧️🚣‍♂️</Text>
+          <Text style={styles.mainTitle}>Dhaka Flood Manual</Text>
+          <Text style={styles.subtitle}>
+            Official survival instructions for waterlogged roads.
+          </Text>
+        </View>
 
-          <ExternalLink href="https://docs.expo.dev" asChild>
-            <Pressable style={({ pressed }) => pressed && styles.pressed}>
-              <ThemedView type="backgroundElement" style={styles.linkButton}>
-                <ThemedText type="link">Expo documentation</ThemedText>
-                <SymbolView
-                  tintColor={theme.text}
-                  name={{ ios: 'arrow.up.right.square', android: 'link', web: 'link' }}
-                  size={12}
-                />
-              </ThemedView>
-            </Pressable>
-          </ExternalLink>
-        </ThemedView>
-
-        <ThemedView style={styles.sectionsWrapper}>
-          <Collapsible title="File-based routing">
-            <ThemedText type="small">
-              This app has two screens: <ThemedText type="code">src/app/index.tsx</ThemedText> and{' '}
-              <ThemedText type="code">src/app/explore.tsx</ThemedText>
-            </ThemedText>
-            <ThemedText type="small">
-              The layout file in <ThemedText type="code">src/app/_layout.tsx</ThemedText> sets up
-              the tab navigator.
-            </ThemedText>
-            <ExternalLink href="https://docs.expo.dev/router/introduction">
-              <ThemedText type="linkPrimary">Learn more</ThemedText>
-            </ExternalLink>
+        <View style={styles.sectionsWrapper}>
+          <Collapsible title="⚠️ Monsoon Survival Rules">
+            <View style={styles.collapsibleContent}>
+              <Text style={styles.bulletText}>
+                • <Text style={styles.boldText}>Sandal Care:</Text> Hold your shoes in your hand. Sandals have a 45% risk of floating to Chittagong.
+              </Text>
+              <Text style={styles.bulletText}>
+                • <Text style={styles.boldText}>Mirpur Waterfalls:</Text> Avoid Mirpur 10 unless you are in a high-density vessel. The currents can sweep away mini boats.
+              </Text>
+              <Text style={styles.bulletText}>
+                • <Text style={styles.boldText}>Water-Truck Wake:</Text> Hold on tight when a double-decker bus passes. The waves generated are equivalent to category 3 hurricanes.
+              </Text>
+              <Text style={styles.bulletText}>
+                • <Text style={styles.boldText}>Umbrella Etiquette:</Text> Hold your umbrella high. Poking your fellow passenger's eyes out decreases your ride rating by 1.5 stars.
+              </Text>
+            </View>
           </Collapsible>
 
-          <Collapsible title="Android, iOS, and web support">
-            <ThemedView type="backgroundElement" style={styles.collapsibleContent}>
-              <ThemedText type="small">
-                You can open this project on Android, iOS, and the web. To open the web version,
-                press <ThemedText type="smallBold">w</ThemedText> in the terminal running this
-                project.
-              </ThemedText>
-              <Image
-                source={require('@/assets/images/tutorial-web.png')}
-                style={styles.imageTutorial}
-              />
-            </ThemedView>
+          <Collapsible title="🚣 Vessel Classifications">
+            <View style={styles.collapsibleContent}>
+              <View style={styles.boatRow}>
+                <Text style={styles.boatEmoji}>🚣</Text>
+                <View style={styles.boatText}>
+                  <Text style={styles.boatName}>Dubao Mini</Text>
+                  <Text style={styles.boatDesc}>Fits two slightly soaked passengers. Captain row speed: Moderate.</Text>
+                </View>
+              </View>
+
+              <View style={styles.boatRow}>
+                <Text style={styles.boatEmoji}>🚤</Text>
+                <View style={styles.boatText}>
+                  <Text style={styles.boatName}>Dubao Launch</Text>
+                  <Text style={styles.boatDesc}>For large commuter gangs. Tends to create waves that wash away roadside tea stalls.</Text>
+                </View>
+              </View>
+
+              <View style={styles.boatRow}>
+                <Text style={styles.boatEmoji}>☂️</Text>
+                <View style={styles.boatText}>
+                  <Text style={styles.boatName}>Dubao VIP</Text>
+                  <Text style={styles.boatDesc}>Equipped with umbrella holster & simulated tea service. Fares include an automatic umbrella tax.</Text>
+                </View>
+              </View>
+
+              <View style={styles.boatRow}>
+                <Text style={styles.boatEmoji}>🚢</Text>
+                <View style={styles.boatText}>
+                  <Text style={styles.boatName}>Dubao Titanic</Text>
+                  <Text style={styles.boatDesc}>Lowest fare, highest confidence, questionable safety. Do not sit near the edges.</Text>
+                </View>
+              </View>
+            </View>
           </Collapsible>
 
-          <Collapsible title="Images">
-            <ThemedText type="small">
-              For static images, you can use the <ThemedText type="code">@2x</ThemedText> and{' '}
-              <ThemedText type="code">@3x</ThemedText> suffixes to provide files for different
-              screen densities.
-            </ThemedText>
-            <Image source={require('@/assets/images/react-logo.png')} style={styles.imageReact} />
-            <ExternalLink href="https://reactnative.dev/docs/images">
-              <ThemedText type="linkPrimary">Learn more</ThemedText>
-            </ExternalLink>
+          <Collapsible title="🏆 Achievements Catalog">
+            <View style={styles.collapsibleContent}>
+              <Text style={styles.bulletText}>
+                🏆 <Text style={styles.boldText}>Survived Mirpur Rainfall:</Text> Book and complete any ride starting or ending in Mirpur.
+              </Text>
+              <Text style={styles.bulletText}>
+                🏆 <Text style={styles.boldText}>Professional Umbrella Holder:</Text> Book a VIP boat and hold your posture high.
+              </Text>
+              <Text style={styles.bulletText}>
+                🏆 <Text style={styles.boldText}>Waterproof Passenger:</Text> Rate a ride 5 stars after getting splashed by waves.
+              </Text>
+              <Text style={styles.bulletText}>
+                🏆 <Text style={styles.boldText}>Fastest Boat Booking:</Text> Beat the flood levels and book before streets turn to rivers.
+              </Text>
+            </View>
           </Collapsible>
 
-          <Collapsible title="Light and dark mode components">
-            <ThemedText type="small">
-              This template has light and dark mode support. The{' '}
-              <ThemedText type="code">useColorScheme()</ThemedText> hook lets you inspect what the
-              user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-            </ThemedText>
-            <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-              <ThemedText type="linkPrimary">Learn more</ThemedText>
-            </ExternalLink>
+          <Collapsible title="📜 Project Disclaimer">
+            <View style={styles.collapsibleContent}>
+              <Text style={styles.disclaimerText}>
+                Dubao is a comedy-parody frontend application built to showcase UI design, animations, and state simulation in React Native + Expo.
+              </Text>
+              <Text style={styles.disclaimerText}>
+                It does not coordinate real rides, process real payments, or have real captains. No sandals were harmed in the making of this project.
+              </Text>
+            </View>
           </Collapsible>
-
-          <Collapsible title="Animations">
-            <ThemedText type="small">
-              This template includes an example of an animated component. The{' '}
-              <ThemedText type="code">src/components/ui/collapsible.tsx</ThemedText> component uses
-              the powerful <ThemedText type="code">react-native-reanimated</ThemedText> library to
-              animate opening this hint.
-            </ThemedText>
-          </Collapsible>
-        </ThemedView>
-        {Platform.OS === 'web' && <WebBadge />}
+        </View>
       </ThemedView>
     </ScrollView>
   );
@@ -136,6 +139,8 @@ const styles = StyleSheet.create({
   container: {
     maxWidth: MaxContentWidth,
     flexGrow: 1,
+    backgroundColor: '#012A4A',
+    paddingBottom: 40,
   },
   titleContainer: {
     gap: Spacing.three,
@@ -143,20 +148,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.six,
   },
-  centerText: {
+  emojiTitle: {
+    fontSize: 48,
     textAlign: 'center',
   },
-  pressed: {
-    opacity: 0.7,
+  mainTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#00B4D8',
+    textAlign: 'center',
   },
-  linkButton: {
-    flexDirection: 'row',
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.two,
-    borderRadius: Spacing.five,
-    justifyContent: 'center',
-    gap: Spacing.one,
-    alignItems: 'center',
+  subtitle: {
+    fontSize: 14,
+    color: '#CBD5E1',
+    textAlign: 'center',
+    paddingHorizontal: 20,
   },
   sectionsWrapper: {
     gap: Spacing.five,
@@ -164,17 +170,49 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.three,
   },
   collapsibleContent: {
+    padding: 12,
+    backgroundColor: '#013A63',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#01497C',
+    marginTop: 6,
+  },
+  bulletText: {
+    color: '#E2E8F0',
+    fontSize: 13,
+    lineHeight: 20,
+    marginBottom: 8,
+  },
+  boldText: {
+    fontWeight: 'bold',
+    color: '#00B4D8',
+  },
+  disclaimerText: {
+    color: '#94A3B8',
+    fontSize: 12,
+    lineHeight: 18,
+    marginBottom: 8,
+  },
+  boatRow: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 12,
   },
-  imageTutorial: {
-    width: '100%',
-    aspectRatio: 296 / 171,
-    borderRadius: Spacing.three,
-    marginTop: Spacing.two,
+  boatEmoji: {
+    fontSize: 28,
+    marginRight: 12,
   },
-  imageReact: {
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
+  boatText: {
+    flex: 1,
+  },
+  boatName: {
+    color: '#00B4D8',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  boatDesc: {
+    color: '#E2E8F0',
+    fontSize: 11,
+    marginTop: 2,
   },
 });

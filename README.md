@@ -1,56 +1,437 @@
-# Welcome to your Expo app 👋
+# Dubao 🚣‍♂️ — The Flood-Friendly Boat Sharing App (Frontend Demo)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Tagline:** _"When Dhaka roads become rivers, ride the vibe."_
 
-## Get started
+Dubao is a **fun, satire mobile app concept** built with **React Native + Expo**. Inspired by ride-sharing apps like Uber and Pathao, it imagines a fictional version of Dhaka where flooded streets are navigated by boats instead of cars or bikes.
 
-1. Install dependencies
+This project is **frontend-only** and uses **mock data** to simulate the complete ride-booking experience. It is created purely for learning, UI/UX practice, portfolio showcase, and entertainment.
 
-   ```bash
-   npm install
-   ```
+> **Disclaimer:** Dubao is a fictional demo application. It does not provide real transportation services, real GPS tracking, real payments, or real ride dispatching.
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+# 🌧️ Why Dubao?
 
-In the output, you'll find options to open the app in a
+Every monsoon, social media fills with jokes about Dhaka roads turning into rivers.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Dubao turns that internet meme into a polished mobile application prototype that demonstrates modern React Native development while keeping everything lighthearted and entertaining.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+The project focuses on:
 
-## Get a fresh project
+- React Native UI development
+- Expo Router navigation
+- Redux Toolkit state management
+- Beautiful animations
+- Role-based application flow
+- Simulated ride experience
+- Modern mobile architecture
+- Funny local humor
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
+# 🎯 Project Goal
+
+Create a production-quality frontend that feels like a real ride-sharing application while using only locally generated demo data.
+
+No backend.
+
+No APIs.
+
+No real maps or dispatch services.
+
+Everything is simulated to showcase application architecture and user experience.
+
+---
+
+# 📱 Platform
+
+- React Native
+- Expo
+- TypeScript
+- Android (Primary)
+- iOS Compatible
+
+---
+
+# 👥 User Roles
+
+## Passenger
+
+- Register/Login (Demo)
+- Select pickup location
+- Select destination
+- Choose a boat
+- Request a ride
+- Watch captain search animation
+- Track incoming boat
+- Complete trip
+- Rate captain
+
+---
+
+## Captain
+
+- Demo login
+- Register a boat
+- Toggle Online/Offline
+- Receive simulated ride requests
+- Accept or reject rides
+- Complete trips
+- View fake earnings
+
+---
+
+# 🚣 Boat Categories
+
+### 🚣 Dubao Mini
+
+Perfect for two slightly soaked passengers.
+
+---
+
+### 🚤 Dubao Launch
+
+For office commuters escaping flooded traffic.
+
+---
+
+### ☂️ Dubao VIP
+
+Comes with an umbrella holder and imaginary tea service.
+
+---
+
+### 📦 Dubao Cargo
+
+Designed for groceries, laptops, and abandoned sandals.
+
+---
+
+### 🚢 Dubao Titanic
+
+Lowest fare.
+Highest confidence.
+Questionable safety.
+
+---
+
+# 📲 Passenger Flow
+
+Splash
+
+↓
+
+Login
+
+↓
+
+Choose Role
+
+↓
+
+Home
+
+↓
+
+Select Pickup & Destination
+
+↓
+
+Choose Boat
+
+↓
+
+Searching Captain
+
+↓
+
+Captain Accepted
+
+↓
+
+Live Ride
+
+↓
+
+Trip Summary
+
+↓
+
+Funny Rating
+
+---
+
+# 👨‍✈️ Captain Flow
+
+Login
+
+↓
+
+Captain Dashboard
+
+↓
+
+Go Online
+
+↓
+
+Receive Ride Request
+
+↓
+
+Accept Ride
+
+↓
+
+Navigate (Simulation)
+
+↓
+
+Complete Trip
+
+↓
+
+Fake Earnings
+
+---
+
+# 📺 Screens
+
+## Passenger
+
+- Splash Screen
+- Login
+- Register
+- Role Selection
+- Home
+- Boat Selection
+- Searching Captain
+- Live Ride Tracking
+- Trip Summary
+- Rating Screen
+
+---
+
+## Captain
+
+- Dashboard
+- Boat Registration
+- Incoming Request
+- Ride Navigation
+- Earnings
+- Profile
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+
+- React Native
+- Expo
+- TypeScript
+- Expo Router
+- Redux Toolkit
+- React Native Maps (Demo)
+- React Native Reanimated
+- AsyncStorage
+
+---
+
+## Simulation
+
+Everything is generated locally.
+
+Examples include:
+
+- Fake captains
+- Fake boats
+- Fake ride requests
+- Fake locations
+- Fake ETA
+- Fake fares
+- Fake movement
+- Fake notifications
+- Fake earnings
+
+No backend is required.
+
+---
+
+# 🎭 Demo Ride Simulation
+
+When the passenger taps **"Request Boat"**
+
+The app will:
+
+1. Show "Searching for nearby captains..."
+2. Generate several demo captains.
+3. Wait a few seconds.
+4. Randomly assign one captain.
+5. Display captain details.
+6. Animate the boat moving toward the pickup point.
+7. Start the ride automatically.
+8. Animate progress.
+9. Complete the trip.
+10. Show the trip summary.
+
+Everything runs entirely on the frontend using timers, animations, and mock data.
+
+---
+
+# 👨‍✈️ Sample Captains
+
+- Babu Mia 🚣
+- Captain Jalil 🌊
+- Flood King Rafi ⛵
+- Noah Bhai 🛶
+- Gondola Guru 😎
+
+---
+
+# 📍 Demo Trip
+
+| Field       | Value                   |
+| ----------- | ----------------------- |
+| Pickup      | Dhanmondi 27            |
+| Destination | Farmgate                |
+| Boat        | Dubao VIP               |
+| ETA         | 4 Minutes               |
+| Fare        | ৳95 + 1 Umbrella Tax ☂️ |
+
+---
+
+# 🎨 Design Theme
+
+### Colors
+
+Ocean Blue
+
+`#0077B6`
+
+Rain Cyan
+
+`#00B4D8`
+
+Flood Gray
+
+`#334155`
+
+Life Jacket Orange
+
+`#FB8500`
+
+---
+
+### Font
+
+- Poppins
+- Inter
+
+---
+
+### Animations
+
+- Floating boats
+- Rain effect
+- Water ripple
+- Animated markers
+- Smooth bottom sheets
+- Loading waves
+
+---
+
+# 😂 Funny Easter Eggs
+
+Random messages may appear during rides.
+
+Examples:
+
+> Traffic detected: 2 buses are currently swimming.
+
+> Your captain is rowing aggressively.
+
+> Surge pricing due to unexpected fish migration.
+
+> Shoes status: Missing.
+
+> Congratulations! You survived another Dhaka monsoon.
+
+Achievements include:
+
+🏆 Survived Mirpur Rainfall
+
+🏆 Fastest Boat Booking
+
+🏆 Professional Umbrella Holder
+
+🏆 Waterproof Passenger
+
+---
+
+# 📂 Suggested Project Structure
+
+```
+app/
+components/
+features/
+redux/
+services/
+hooks/
+constants/
+assets/
+animations/
+data/
+utils/
+types/
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-### Other setup steps
+# 🚀 MVP Scope
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+### Day 1
 
-## Learn more
+- Authentication UI
+- Role Selection
+- Home Screen
+- Fake Map
+- Demo Boats
 
-To learn more about developing your project with Expo, look at the following resources:
+---
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Day 2
 
-## Join the community
+- Ride Request
+- Searching Animation
+- Captain Assignment
+- Live Ride Tracking
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Day 3
+
+- Trip Completion
+- Ratings
+- Earnings
+- Animations
+- Polish
+- Easter Eggs
+
+---
+
+# 💼 Portfolio Description
+
+**Dubao** is a frontend-only React Native demo application that humorously imagines Dhaka's flooded streets as waterways during the monsoon season. Users can experience a fully simulated boat-sharing journey by booking fictional rides, matching with demo captains, tracking animated boats, and completing trips using locally generated mock data. The project demonstrates modern mobile architecture, role-based navigation, Redux Toolkit state management, animations, and polished UI/UX while intentionally avoiding real-world services, APIs, or backend integration.
+
+---
+
+# ⚠️ Disclaimer
+
+Dubao is a parody project created for educational purposes, frontend development practice, and entertainment. All rides, captains, boats, locations, fares, and tracking are fictional and generated using demo data. The app does not provide real transportation services or interact with any live backend systems.
+
+---
+
+# 🚀 Launch Line
+
+**"Dhaka is underwater? Don't panic. Just Dubao."** 🚣🌧️
